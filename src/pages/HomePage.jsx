@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowRight, Banknote, Hammer, Home, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import heroHouseImage from '../assets/hero-house.jpg'
 
 const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
@@ -18,14 +19,8 @@ export default function HomePage() {
           </div>
           <div className="hero__trust"><ShieldCheck size={18} aria-hidden="true" /><span>Specialised financing guidance. Direct next steps. No obligation.</span></div>
         </div>
-        <div className="hero__drawing" aria-label="Architectural line drawing of a home">
-          <div className="house-drawing">
-            <div className="roof-line" />
-            <div className="house-body"><span className="window" /><span className="door" /><span className="window window--right" /></div>
-            <span className="drawing-label">AFH / CONCEPT 01</span>
-            <span className="dimension dimension--width">48′–0″</span>
-            <span className="dimension dimension--height">18′–6″</span>
-          </div>
+        <div className="hero__drawing">
+          <img className="hero__photo" src={heroHouseImage} alt="Two-storey Adult Family Home style house exterior at dusk" />
         </div>
       </section>
 
