@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ArrowRight, CheckCircle2, LoaderCircle } from 'lucide-react'
+import ApplyButton from './ApplyButton'
 import { isSupabaseConfigured, supabase } from '../lib'
 
 const initialForm = { name: '', contact: '', financing_need: '', notes: '' }
@@ -45,13 +46,17 @@ export default function LeadForm() {
   if (status.type === 'success') {
     return (
       <div className="form-success" role="status">
-        <CheckCircle2 size={42} />
+        <CheckCircle2 size={42} aria-hidden="true" />
         <p className="eyebrow">REQUEST RECEIVED</p>
-        <h3>We’ll review your financing need.</h3>
-        <p>{status.message} A member of our team will use the contact information you provided to follow up.</p>
-        <button className="button button--secondary" type="button" onClick={() => setStatus({ type: 'idle', message: '' })}>
-          Submit another request
-        </button>
+        <h3>Thank you.</h3>
+        <p>A member of our team will contact you shortly.</p>
+        <p>If you prefer to apply immediately, click below.</p>
+        <div className="form-success__actions">
+          <ApplyButton className="button--primary">Start Financing Application</ApplyButton>
+          <button className="button button--secondary" type="button" onClick={() => setStatus({ type: 'idle', message: '' })}>
+            Submit another request
+          </button>
+        </div>
       </div>
     )
   }
@@ -93,7 +98,7 @@ export default function LeadForm() {
       {status.type === 'error' && <div className="form-error" role="alert">{status.message}</div>}
 
       <button className="button button--primary button--wide" type="submit" disabled={status.type === 'loading'}>
-        {status.type === 'loading' ? <><LoaderCircle className="spin" size={18} /> Submitting...</> : <>Check my financing options <ArrowRight size={18} /></>}
+        {status.type === 'loading' ? <><LoaderCircle className="spin" size={18} aria-hidden="true" /> Submitting...</> : <>Check my financing options <ArrowRight size={18} aria-hidden="true" /></>}
       </button>
       <p className="form-fineprint">No obligation. Your information is used only to review and respond to your financing enquiry.</p>
     </form>
