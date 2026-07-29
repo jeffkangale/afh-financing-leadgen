@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-export const APPLY_URL = 'https://portal.payrofinance.com/sign-up?partner=carebear'
+export const PAYRO_SIGNUP_URL = 'https://portal.payrofinance.com/sign-up?partner=carebear'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY

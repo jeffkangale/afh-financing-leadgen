@@ -6,10 +6,15 @@ create table if not exists public.leads (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   name text not null check (char_length(trim(name)) between 2 and 150),
-  contact text not null check (char_length(trim(contact)) between 3 and 200),
+  business_name text null check (business_name is null or char_length(trim(business_name)) <= 150),
+  email text null check (email is null or char_length(trim(email)) between 3 and 200),
+  phone text null check (phone is null or char_length(trim(phone)) <= 40),
+  contact text null check (contact is null or char_length(trim(contact)) <= 200),
   financing_need text not null check (
-    financing_need in ('purchase', 'construction_renovation', 'not_sure')
+    financing_need in ('purchase', 'construction_renovation', 'payroll', 'not_sure', 'other')
   ),
+  estimated_amount text null check (estimated_amount is null or char_length(trim(estimated_amount)) <= 100),
+  timeline text null check (timeline is null or char_length(trim(timeline)) <= 100),
   notes text null check (notes is null or char_length(notes) <= 3000)
 );
 

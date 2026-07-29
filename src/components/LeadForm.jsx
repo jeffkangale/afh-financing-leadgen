@@ -1,13 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, CheckCircle2, LoaderCircle } from 'lucide-react'
-import ApplyButton from './ApplyButton'
+import PayroButton from './PayroButton'
 import { isSupabaseConfigured, supabase } from '../lib'
 
-const initialForm = { name: '', contact: '', financing_need: '', notes: '' }
+const initialForm = {
+  name: '',
+  business_name: '',
+  email: '',
+  phone: '',
+  financing_need: '',
+  estimated_amount: '',
+  timeline: '',
+  notes: '',
+}
 
-export default function LeadForm() {
+const financingOptions = [
+  ['purchase', 'Purchase or acquisition financing', 'I need financing to buy or acquire an AFH property or business.'],
+  ['construction_renovation', 'Project, renovation, or expansion financing', 'I already have a property and need capital for improvements.'],
+  ['payroll', 'Payroll funding', 'I want to cover a temporary payroll cash-flow gap.'],
+  ['not_sure', 'Not sure yet', 'I would like help identifying the right path.'],
+  ['other', 'Other', 'My need does not fit the options above.'],
+]
+
+export default function LeadForm({ preset }) {
   const [form, setForm] = useState(initialForm)
   const [status, setStatus] = useState({ type: 'idle', message: '' })
+  const radioRefs = useRef({})
+
+  useEffect(() => {
+    if (!preset?.value) return
+    setForm((current) => ({ ...current, financing_need: preset.value }))
+    const timer = setTimeout(() => radioRefs.current[preset.value]?.focus(), 500)
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preset?.token])
 
   const update = (event) => {
     const { name, value } = event.target
@@ -24,16 +50,22 @@ export default function LeadForm() {
     }
 
     try {
+      const contact = [form.email.trim(), form.phone.trim()].filter(Boolean).join(' / ')
       const { error } = await supabase.from('leads').insert({
         name: form.name.trim(),
-        contact: form.contact.trim(),
+        business_name: form.business_name.trim() || null,
+        email: form.email.trim(),
+        phone: form.phone.trim() || null,
+        contact,
         financing_need: form.financing_need,
+        estimated_amount: form.estimated_amount.trim() || null,
+        timeline: form.timeline.trim() || null,
         notes: form.notes.trim() || null,
       })
 
       if (error) throw error
       setForm(initialForm)
-      setStatus({ type: 'success', message: 'Thank you. Your financing request has been received.' })
+      setStatus({ type: 'success', message: 'Thank you. Your financing request has been received.', financingNeed: form.financing_need })
     } catch (error) {
       console.error(error)
       setStatus({
@@ -48,11 +80,15 @@ export default function LeadForm() {
       <div className="form-success" role="status">
         <CheckCircle2 size={42} aria-hidden="true" />
         <p className="eyebrow">REQUEST RECEIVED</p>
-        <h3>Thank you.</h3>
-        <p>A member of our team will contact you shortly.</p>
-        <p>If you prefer to apply immediately, click below.</p>
+        <h3>We’ll review your financing need.</h3>
+        <p>{status.message} A member of our team will use the contact information you provided to follow up.</p>
+        {status.financingNeed === 'payroll' && (
+          <p>Prefer not to wait? You can also apply directly through the Payro Finance payroll-funding portal.</p>
+        )}
         <div className="form-success__actions">
-          <ApplyButton className="button--primary">Start Financing Application</ApplyButton>
+          {status.financingNeed === 'payroll' && (
+            <PayroButton className="button--primary">Apply directly with Payro Finance</PayroButton>
+          )}
           <button className="button button--secondary" type="button" onClick={() => setStatus({ type: 'idle', message: '' })}>
             Submit another request
           </button>
@@ -69,29 +105,55 @@ export default function LeadForm() {
           <input name="name" value={form.name} onChange={update} autoComplete="name" required placeholder="Your full name" />
         </label>
         <label>
-          Phone or email
-          <input name="contact" value={form.contact} onChange={update} required placeholder="How should we reach you?" />
+          Business name <span className="optional">Optional</span>
+          <input name="business_name" value={form.business_name} onChange={update} autoComplete="organization" placeholder="Your AFH business name" />
+        </label>
+      </div>
+
+      <div className="field-grid">
+        <label>
+          Email
+          <input type="email" name="email" value={form.email} onChange={update} autoComplete="email" required placeholder="you@example.com" />
+        </label>
+        <label>
+          Phone number <span className="optional">Optional</span>
+          <input type="tel" name="phone" value={form.phone} onChange={update} autoComplete="tel" placeholder="How can we reach you by phone?" />
         </label>
       </div>
 
       <fieldset>
         <legend>What are you financing?</legend>
         <div className="radio-grid">
-          {[
-            ['purchase', 'Purchasing a home', 'I need financing to acquire an AFH property.'],
-            ['construction_renovation', 'Construction or renovation', 'I already have a property and need capital for improvements.'],
-            ['not_sure', 'Not sure yet', 'I would like help identifying the right path.'],
-          ].map(([value, title, description]) => (
+          {financingOptions.map(([value, title, description]) => (
             <label className={`radio-card ${form.financing_need === value ? 'radio-card--selected' : ''}`} key={value}>
-              <input type="radio" name="financing_need" value={value} checked={form.financing_need === value} onChange={update} required />
+              <input
+                type="radio"
+                name="financing_need"
+                value={value}
+                checked={form.financing_need === value}
+                onChange={update}
+                required
+                ref={(el) => { radioRefs.current[value] = el }}
+              />
               <span><strong>{title}</strong><small>{description}</small></span>
             </label>
           ))}
         </div>
       </fieldset>
 
+      <div className="field-grid">
+        <label>
+          Estimated amount <span className="optional">Optional</span>
+          <input name="estimated_amount" value={form.estimated_amount} onChange={update} placeholder="e.g. $50,000" />
+        </label>
+        <label>
+          Timeline <span className="optional">Optional</span>
+          <input name="timeline" value={form.timeline} onChange={update} placeholder="e.g. Within 30-60 days" />
+        </label>
+      </div>
+
       <label>
-        Anything else we should know? <span className="optional">Optional</span>
+        Message <span className="optional">Optional</span>
         <textarea name="notes" value={form.notes} onChange={update} rows="4" placeholder="Property status, project scope, approximate timing, or questions..." />
       </label>
 
