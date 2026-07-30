@@ -55,4 +55,7 @@ footer p:not(:first-of-type) { border-top: none; color: #9db2ac; font-size: 11px
 .hero__drawing { overflow: hidden; }
 .hero__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 
+.path-card__icon { width: 34px; height: 34px; color: var(--forest); }
+.path-card__number { max-width: 72%; text-align: right; line-height: 1.5; }
+
 @media(max-width:950px){ .checklist{grid-template-columns:1fr} .steps{grid-template-columns:1fr} .path-grid{grid-template-columns:1fr} }

@@ -1,4 +1,5 @@
-import { ArrowDown, ArrowRight, Banknote, Hammer, Home, ShieldCheck } from 'lucide-react'
+import { BanknotesIcon, HomeIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/solid'
+import { ArrowDown, ArrowRight, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import heroHouseImage from '../assets/hero-house.jpg'
 
@@ -32,8 +33,8 @@ export default function HomePage() {
         </div>
         <div className="path-grid">
           <article className="path-card">
-            <div className="path-card__number">PATH 01</div>
-            <Home size={34} strokeWidth={1.45} aria-hidden="true" />
+            <div className="path-card__number">PATH 01 · PURCHASE FINANCING</div>
+            <HomeIcon className="path-card__icon" aria-hidden="true" />
             <h3>Purchase financing</h3>
             <p>For buying or acquiring an existing adult family home business or a property intended for AFH operations.</p>
             <ul><li>Property acquisition</li><li>Business acquisition</li><li>Initial working capital</li></ul>
@@ -42,8 +43,8 @@ export default function HomePage() {
             </Link>
           </article>
           <article className="path-card path-card--accent">
-            <div className="path-card__number">PATH 02</div>
-            <Hammer size={34} strokeWidth={1.45} aria-hidden="true" />
+            <div className="path-card__number">PATH 02 · PROJECT FINANCING</div>
+            <WrenchScrewdriverIcon className="path-card__icon" aria-hidden="true" />
             <h3>Project financing</h3>
             <p>For owners who already control the property and need capital to renovate, expand, modernise, or meet licensing requirements.</p>
             <ul><li>Renovations and accessibility upgrades</li><li>Safety upgrades and equipment</li><li>Licensing preparation</li></ul>
@@ -52,8 +53,8 @@ export default function HomePage() {
             </Link>
           </article>
           <article className="path-card">
-            <div className="path-card__number">PATH 03</div>
-            <Banknote size={34} strokeWidth={1.45} aria-hidden="true" />
+            <div className="path-card__number">PATH 03 · PAYROLL FUNDING</div>
+            <BanknotesIcon className="path-card__icon" aria-hidden="true" />
             <h3>Payroll funding</h3>
             <p>A backup option for temporary payroll cash-flow gaps, through our partner Payro Finance.</p>
             <ul><li>Delayed payer receipts</li><li>Seasonal cash-flow gaps</li><li>Unexpected payroll expenses</li></ul>
