@@ -19,13 +19,9 @@ const initialForm = {
   city: '',
   state: '',
   financing_need: '',
-  estimated_amount: '',
-  funding_needed_by: '',
-  notes: '',
   property_under_contract: '',
   next_payroll_date: '',
   payroll_amount_needed: '',
-  referral_source: '',
 }
 
 const businessStatusOptions = [
@@ -71,24 +67,6 @@ const financingOptions = [
     'Other',
     'My financing need does not fit the options above.',
   ],
-]
-
-const fundingTimelineOptions = [
-  ['asap', 'As soon as possible'],
-  ['within_30_days', 'Within 30 days'],
-  ['within_60_days', 'Within 60 days'],
-  ['within_90_days', 'Within 90 days'],
-  ['over_90_days', 'More than 90 days'],
-]
-
-const referralOptions = [
-  ['google', 'Google Search'],
-  ['referral', 'Referral'],
-  ['existing_client', 'Existing Client'],
-  ['accountant', 'Accountant or Bookkeeper'],
-  ['social_media', 'Social Media'],
-  ['payro_finance', 'Payro Finance'],
-  ['other', 'Other'],
 ]
 
 const stateOptions = [
@@ -234,16 +212,6 @@ export default function LeadForm({ preset }) {
         form.business_status
       )
 
-      const fundingTimelineTitle = getOptionLabel(
-        fundingTimelineOptions,
-        form.funding_needed_by
-      )
-
-      const referralTitle = getOptionLabel(
-        referralOptions,
-        form.referral_source
-      )
-
       const templateParams = {
         full_name: form.name.trim(),
         email: form.email.trim(),
@@ -254,14 +222,6 @@ export default function LeadForm({ preset }) {
         state: form.state || 'Not provided',
 
         financing_type: financingTitle,
-        amount_requested:
-          form.estimated_amount.trim(),
-        funding_needed_by:
-          fundingTimelineTitle,
-
-        message:
-          form.notes.trim() ||
-          'No description provided',
 
         property_under_contract:
           isPropertyFinancing
@@ -280,8 +240,6 @@ export default function LeadForm({ preset }) {
             ? form.payroll_amount_needed.trim() ||
               'Not provided'
             : 'Not applicable',
-
-        referral_source: referralTitle,
       }
 
       if (isSupabaseConfigured) {
@@ -308,15 +266,6 @@ export default function LeadForm({ preset }) {
             financing_need:
               form.financing_need,
 
-            estimated_amount:
-              form.estimated_amount.trim(),
-
-            funding_needed_by:
-              form.funding_needed_by,
-
-            notes:
-              form.notes.trim() || null,
-
             property_under_contract:
               isPropertyFinancing
                 ? form.property_under_contract ||
@@ -333,9 +282,6 @@ export default function LeadForm({ preset }) {
                 ? form.payroll_amount_needed.trim() ||
                   null
                 : null,
-
-            referral_source:
-              form.referral_source || null,
           })
 
         if (error) {
@@ -440,7 +386,7 @@ export default function LeadForm({ preset }) {
       className="lead-form"
       onSubmit={submit}
     >
-      <div className="form-section">
+      <div className="lead-form__group">
         <p className="eyebrow">
           CONTACT INFORMATION
         </p>
@@ -486,7 +432,7 @@ export default function LeadForm({ preset }) {
         </label>
       </div>
 
-      <div className="form-section">
+      <div className="lead-form__group">
         <p className="eyebrow">
           BUSINESS INFORMATION
         </p>
@@ -563,7 +509,7 @@ export default function LeadForm({ preset }) {
         </div>
       </div>
 
-      <div className="form-section">
+      <div className="lead-form__group">
         <p className="eyebrow">
           FINANCING REQUEST
         </p>
@@ -614,64 +560,10 @@ export default function LeadForm({ preset }) {
             )}
           </div>
         </fieldset>
-
-        <div className="field-grid">
-          <label>
-            Amount requested
-            <input
-              name="estimated_amount"
-              value={form.estimated_amount}
-              onChange={update}
-              required
-              inputMode="decimal"
-              placeholder="e.g. $50,000"
-            />
-          </label>
-
-          <label>
-            Funding needed by
-            <select
-              name="funding_needed_by"
-              value={form.funding_needed_by}
-              onChange={update}
-              required
-            >
-              <option value="">
-                Select a timeline
-              </option>
-
-              {fundingTimelineOptions.map(
-                ([value, label]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {label}
-                  </option>
-                )
-              )}
-            </select>
-          </label>
-        </div>
-
-        <label>
-          Brief description{' '}
-          <span className="optional">
-            Optional
-          </span>
-
-          <textarea
-            name="notes"
-            value={form.notes}
-            onChange={update}
-            rows="4"
-            placeholder="Tell us briefly how the funds will be used."
-          />
-        </label>
       </div>
 
       {isPropertyFinancing && (
-        <div className="form-section">
+        <div className="lead-form__group">
           <p className="eyebrow">
             PROPERTY INFORMATION
           </p>
@@ -717,7 +609,7 @@ export default function LeadForm({ preset }) {
       )}
 
       {isPayrollFinancing && (
-        <div className="form-section">
+        <div className="lead-form__group">
           <p className="eyebrow">
             PAYROLL INFORMATION
           </p>
@@ -750,36 +642,6 @@ export default function LeadForm({ preset }) {
           </div>
         </div>
       )}
-
-      <div className="form-section">
-        <label>
-          How did you hear about us?{' '}
-          <span className="optional">
-            Optional
-          </span>
-
-          <select
-            name="referral_source"
-            value={form.referral_source}
-            onChange={update}
-          >
-            <option value="">
-              Select an option
-            </option>
-
-            {referralOptions.map(
-              ([value, label]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {label}
-                </option>
-              )
-            )}
-          </select>
-        </label>
-      </div>
 
       {status.type === 'error' && (
         <div

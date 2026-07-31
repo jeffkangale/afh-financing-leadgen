@@ -58,4 +58,14 @@ footer p:not(:first-of-type) { border-top: none; color: #9db2ac; font-size: 11px
 .path-card__icon { width: 34px; height: 34px; color: var(--forest); }
 .path-card__number { max-width: 72%; text-align: right; line-height: 1.5; }
 
+.lead-form__group { margin-bottom: 34px; }
+.lead-form__group:last-of-type { margin-bottom: 0; }
+.lead-form__group > .eyebrow { padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.lead-form__group > label,
+.lead-form__group > .field-grid,
+.lead-form__group > fieldset { margin-top: 20px; }
+.lead-form__group > fieldset:first-child,
+.lead-form__group > label:first-child,
+.lead-form__group > .field-grid:first-child { margin-top: 0; }
+
 @media(max-width:950px){ .checklist{grid-template-columns:1fr} .steps{grid-template-columns:1fr} .path-grid{grid-template-columns:1fr} }
