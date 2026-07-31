@@ -38,7 +38,7 @@ const financingOptions = [
     'Buy or acquire an AFH property or business.',
   ],
   [
-    'construction_renovation',
+    'renovation_expansion',
     'Renovation or expansion',
     'Capital for improvements, renovations, or expansion.',
   ],
@@ -169,7 +169,7 @@ export default function LeadForm({ preset }) {
   const isPropertyFinancing =
     form.financing_need === 'purchase' ||
     form.financing_need ===
-      'construction_renovation'
+      'renovation_expansion'
 
   const isPayrollFinancing =
     form.financing_need === 'payroll'
