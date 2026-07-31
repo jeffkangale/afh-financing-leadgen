@@ -184,63 +184,60 @@ export default function LeadForm({ preset }) {
 
     const serviceId =
       import.meta.env.VITE_EMAILJS_SERVICE_ID
-
     const templateId =
       import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-
     const publicKey =
       import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
-    if (!serviceId || !templateId || !publicKey) {
+    const emailJsConfigured = Boolean(
+      serviceId && templateId && publicKey
+    )
+
+    if (!isSupabaseConfigured && !emailJsConfigured) {
       setStatus({
         type: 'error',
         message:
-          'Email notifications are not configured. Please contact the site administrator.',
+          'The form is not configured yet. Please contact the site administrator.',
       })
-
       return
     }
 
+    const financingTitle = getOptionLabel(
+      financingOptions,
+      form.financing_need
+    )
+
+    const businessStatusTitle = getOptionLabel(
+      businessStatusOptions,
+      form.business_status
+    )
+
+    const stateTitle = form.state
+      ? getOptionLabel(stateOptions, form.state)
+      : 'Not provided'
+
+    const templateParams = {
+      full_name: form.name.trim(),
+      email: form.email.trim(),
+      phone_number: form.phone.trim(),
+      business_status: businessStatusTitle,
+      city: form.city.trim() || 'Not provided',
+      state: stateTitle,
+      financing_type: financingTitle,
+      property_under_contract: isPropertyFinancing
+        ? form.property_under_contract || 'Not provided'
+        : 'Not applicable',
+      next_payroll_date: isPayrollFinancing
+        ? form.next_payroll_date || 'Not provided'
+        : 'Not applicable',
+      payroll_amount_needed: isPayrollFinancing
+        ? form.payroll_amount_needed.trim() ||
+          'Not provided'
+        : 'Not applicable',
+    }
+
     try {
-      const financingTitle = getOptionLabel(
-        financingOptions,
-        form.financing_need
-      )
-
-      const businessStatusTitle = getOptionLabel(
-        businessStatusOptions,
-        form.business_status
-      )
-
-      const templateParams = {
-        full_name: form.name.trim(),
-        email: form.email.trim(),
-        phone_number: form.phone.trim(),
-
-        business_status: businessStatusTitle,
-        city: form.city.trim() || 'Not provided',
-        state: form.state || 'Not provided',
-
-        financing_type: financingTitle,
-
-        property_under_contract:
-          isPropertyFinancing
-            ? form.property_under_contract ||
-              'Not provided'
-            : 'Not applicable',
-
-        next_payroll_date:
-          isPayrollFinancing
-            ? form.next_payroll_date ||
-              'Not provided'
-            : 'Not applicable',
-
-        payroll_amount_needed:
-          isPayrollFinancing
-            ? form.payroll_amount_needed.trim() ||
-              'Not provided'
-            : 'Not applicable',
-      }
+      let leadStored = false
 
       if (isSupabaseConfigured) {
         const contact = [
@@ -257,26 +254,17 @@ export default function LeadForm({ preset }) {
             email: form.email.trim(),
             phone: form.phone.trim(),
             contact,
-
-            business_status:
-              form.business_status,
+            business_status: form.business_status,
             city: form.city.trim() || null,
             state: form.state || null,
-
-            financing_need:
-              form.financing_need,
-
+            financing_need: form.financing_need,
             property_under_contract:
               isPropertyFinancing
-                ? form.property_under_contract ||
-                  null
+                ? form.property_under_contract || null
                 : null,
-
-            next_payroll_date:
-              isPayrollFinancing
-                ? form.next_payroll_date || null
-                : null,
-
+            next_payroll_date: isPayrollFinancing
+              ? form.next_payroll_date || null
+              : null,
             payroll_amount_needed:
               isPayrollFinancing
                 ? form.payroll_amount_needed.trim() ||
@@ -289,16 +277,34 @@ export default function LeadForm({ preset }) {
             `Supabase error: ${error.message}`
           )
         }
+
+        leadStored = true
       }
 
-      await emailjs.send(
-        serviceId,
-        templateId,
-        templateParams,
-        {
-          publicKey,
+      if (emailJsConfigured) {
+        try {
+          await emailjs.send(
+            serviceId,
+            templateId,
+            templateParams,
+            { publicKey }
+          )
+        } catch (emailError) {
+          console.error('EmailJS notification failed:', {
+            status: emailError?.status,
+            text: emailError?.text,
+            message: emailError?.message,
+            error: emailError,
+          })
+
+          // The lead is already safely stored in Supabase.
+          // Do not tell the visitor that the submission failed
+          // only because the internal email notification failed.
+          if (!leadStored) {
+            throw emailError
+          }
         }
-      )
+      }
 
       const submittedFinancingNeed =
         form.financing_need
@@ -309,16 +315,22 @@ export default function LeadForm({ preset }) {
         type: 'success',
         message:
           'Thank you. Your financing request has been received.',
-        financingNeed:
-          submittedFinancingNeed,
+        financingNeed: submittedFinancingNeed,
       })
     } catch (error) {
-      console.error('Submission error:', error)
+      console.error('Submission failed:', {
+        status: error?.status,
+        text: error?.text,
+        message: error?.message,
+        error,
+      })
 
       setStatus({
         type: 'error',
         message:
-          'We could not submit your request. Please check your information and try again.',
+          error?.text ||
+          error?.message ||
+          'We could not submit your request. Please try again.',
       })
     }
   }
