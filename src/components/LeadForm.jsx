@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import emailjs from '@emailjs/browser'
 import {
   ArrowRight,
   CheckCircle2,
   LoaderCircle,
 } from 'lucide-react'
-import PayroButton from './PayroButton'
 import {
   isSupabaseConfigured,
   supabase,
@@ -18,10 +17,7 @@ const initialForm = {
   business_status: '',
   city: '',
   state: '',
-  financing_need: '',
-  property_under_contract: '',
-  next_payroll_date: '',
-  payroll_amount_needed: '',
+  message: '',
 }
 
 const businessStatusOptions = [
@@ -29,44 +25,6 @@ const businessStatusOptions = [
   ['buying', 'Buying an AFH'],
   ['starting', 'Starting a new AFH'],
   ['expanding', 'Expanding an existing AFH'],
-]
-
-const financingOptions = [
-  [
-    'purchase',
-    'Purchase or acquisition',
-    'Buy or acquire an AFH property or business.',
-  ],
-  [
-    'renovation_expansion',
-    'Renovation or expansion',
-    'Capital for improvements, renovations, or expansion.',
-  ],
-  [
-    'payroll',
-    'Payroll funding',
-    'Cover a temporary payroll cash-flow gap.',
-  ],
-  [
-    'working_capital',
-    'Working capital',
-    'Funds for day-to-day business operations.',
-  ],
-  [
-    'equipment',
-    'Equipment financing',
-    'Financing for business equipment or furnishings.',
-  ],
-  [
-    'not_sure',
-    'Not sure yet',
-    'Help me identify the right financing option.',
-  ],
-  [
-    'other',
-    'Other',
-    'My financing need does not fit the options above.',
-  ],
 ]
 
 const stateOptions = [
@@ -124,38 +82,18 @@ const stateOptions = [
 
 function getOptionLabel(options, selectedValue) {
   return (
-    options.find(
-      ([value]) => value === selectedValue
-    )?.[1] ||
+    options.find(([value]) => value === selectedValue)?.[1] ||
     selectedValue ||
     'Not provided'
   )
 }
 
-export default function LeadForm({ preset }) {
+export default function LeadForm() {
   const [form, setForm] = useState(initialForm)
-
   const [status, setStatus] = useState({
     type: 'idle',
     message: '',
   })
-
-  const radioRefs = useRef({})
-
-  useEffect(() => {
-    if (!preset?.value) return
-
-    setForm((current) => ({
-      ...current,
-      financing_need: preset.value,
-    }))
-
-    const timer = setTimeout(() => {
-      radioRefs.current[preset.value]?.focus()
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [preset?.token, preset?.value])
 
   const update = (event) => {
     const { name, value } = event.target
@@ -166,14 +104,6 @@ export default function LeadForm({ preset }) {
     }))
   }
 
-  const isPropertyFinancing =
-    form.financing_need === 'purchase' ||
-    form.financing_need ===
-      'renovation_expansion'
-
-  const isPayrollFinancing =
-    form.financing_need === 'payroll'
-
   const submit = async (event) => {
     event.preventDefault()
 
@@ -182,12 +112,9 @@ export default function LeadForm({ preset }) {
       message: '',
     })
 
-    const serviceId =
-      import.meta.env.VITE_EMAILJS_SERVICE_ID
-    const templateId =
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-    const publicKey =
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
     const emailJsConfigured = Boolean(
       serviceId && templateId && publicKey
@@ -201,11 +128,6 @@ export default function LeadForm({ preset }) {
       })
       return
     }
-
-    const financingTitle = getOptionLabel(
-      financingOptions,
-      form.financing_need
-    )
 
     const businessStatusTitle = getOptionLabel(
       businessStatusOptions,
@@ -223,17 +145,7 @@ export default function LeadForm({ preset }) {
       business_status: businessStatusTitle,
       city: form.city.trim() || 'Not provided',
       state: stateTitle,
-      financing_type: financingTitle,
-      property_under_contract: isPropertyFinancing
-        ? form.property_under_contract || 'Not provided'
-        : 'Not applicable',
-      next_payroll_date: isPayrollFinancing
-        ? form.next_payroll_date || 'Not provided'
-        : 'Not applicable',
-      payroll_amount_needed: isPayrollFinancing
-        ? form.payroll_amount_needed.trim() ||
-          'Not provided'
-        : 'Not applicable',
+      message: form.message.trim(),
     }
 
     try {
@@ -257,25 +169,11 @@ export default function LeadForm({ preset }) {
             business_status: form.business_status,
             city: form.city.trim() || null,
             state: form.state || null,
-            financing_need: form.financing_need,
-            property_under_contract:
-              isPropertyFinancing
-                ? form.property_under_contract || null
-                : null,
-            next_payroll_date: isPayrollFinancing
-              ? form.next_payroll_date || null
-              : null,
-            payroll_amount_needed:
-              isPayrollFinancing
-                ? form.payroll_amount_needed.trim() ||
-                  null
-                : null,
+            notes: form.message.trim() || null,
           })
 
         if (error) {
-          throw new Error(
-            `Supabase error: ${error.message}`
-          )
+          throw new Error(`Supabase error: ${error.message}`)
         }
 
         leadStored = true
@@ -297,17 +195,11 @@ export default function LeadForm({ preset }) {
             error: emailError,
           })
 
-          // The lead is already safely stored in Supabase.
-          // Do not tell the visitor that the submission failed
-          // only because the internal email notification failed.
           if (!leadStored) {
             throw emailError
           }
         }
       }
-
-      const submittedFinancingNeed =
-        form.financing_need
 
       setForm(initialForm)
 
@@ -315,7 +207,6 @@ export default function LeadForm({ preset }) {
         type: 'success',
         message:
           'Thank you. Your financing request has been received.',
-        financingNeed: submittedFinancingNeed,
       })
     } catch (error) {
       console.error('Submission failed:', {
@@ -337,45 +228,19 @@ export default function LeadForm({ preset }) {
 
   if (status.type === 'success') {
     return (
-      <div
-        className="form-success"
-        role="status"
-      >
-        <CheckCircle2
-          size={42}
-          aria-hidden="true"
-        />
+      <div className="form-success" role="status">
+        <CheckCircle2 size={42} aria-hidden="true" />
 
-        <p className="eyebrow">
-          REQUEST RECEIVED
-        </p>
+        <p className="eyebrow">REQUEST RECEIVED</p>
 
-        <h3>
-          We’ll review your financing need.
-        </h3>
+        <h3>We’ll review your financing request.</h3>
 
         <p>
-          {status.message} A member of our team
-          will use the contact information you
-          provided to follow up.
+          {status.message} A member of our team will use the
+          contact information you provided to follow up.
         </p>
 
-        {status.financingNeed === 'payroll' && (
-          <p>
-            You can also apply directly through
-            the Payro Finance payroll-funding
-            portal.
-          </p>
-        )}
-
         <div className="form-success__actions">
-          {status.financingNeed ===
-            'payroll' && (
-            <PayroButton className="button--primary">
-              Apply directly with Payro Finance
-            </PayroButton>
-          )}
-
           <button
             className="button button--secondary"
             type="button"
@@ -394,10 +259,7 @@ export default function LeadForm({ preset }) {
   }
 
   return (
-    <form
-      className="lead-form"
-      onSubmit={submit}
-    >
+    <form className="lead-form" onSubmit={submit}>
       <div className="lead-form__group">
         <p className="eyebrow">
           <span className="lead-form__group-num">1</span>
@@ -459,30 +321,19 @@ export default function LeadForm({ preset }) {
             onChange={update}
             required
           >
-            <option value="">
-              Select your business status
-            </option>
+            <option value="">Select your business status</option>
 
-            {businessStatusOptions.map(
-              ([value, label]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {label}
-                </option>
-              )
-            )}
+            {businessStatusOptions.map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
           </select>
         </label>
 
         <div className="field-grid">
           <label>
-            City{' '}
-            <span className="optional">
-              Optional
-            </span>
-
+            City <span className="optional">Optional</span>
             <input
               name="city"
               value={form.city}
@@ -493,31 +344,20 @@ export default function LeadForm({ preset }) {
           </label>
 
           <label>
-            State{' '}
-            <span className="optional">
-              Optional
-            </span>
-
+            State <span className="optional">Optional</span>
             <select
               name="state"
               value={form.state}
               onChange={update}
               autoComplete="address-level1"
             >
-              <option value="">
-                Select state
-              </option>
+              <option value="">Select state</option>
 
-              {stateOptions.map(
-                ([value, label]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {label}
-                  </option>
-                )
-              )}
+              {stateOptions.map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </label>
         </div>
@@ -526,152 +366,33 @@ export default function LeadForm({ preset }) {
       <div className="lead-form__group">
         <p className="eyebrow">
           <span className="lead-form__group-num">3</span>
-          FINANCING REQUEST
+          HOW THE FUNDS WILL BE USED
         </p>
 
-        <fieldset>
-          <legend>
-            What are you financing?
-          </legend>
-
-          <div className="option-grid">
-            {financingOptions.map(
-              ([
-                value,
-                title,
-                description,
-              ]) => (
-                <label
-                  className={`option-row ${
-                    form.financing_need ===
-                    value
-                      ? 'option-row--selected'
-                      : ''
-                  }`}
-                  key={value}
-                >
-                  <input
-                    type="radio"
-                    name="financing_need"
-                    value={value}
-                    checked={
-                      form.financing_need ===
-                      value
-                    }
-                    onChange={update}
-                    required
-                    ref={(element) => {
-                      radioRefs.current[value] =
-                        element
-                    }}
-                  />
-
-                  <span className="option-row__text">
-                    <strong>{title}</strong>{' '}
-                    {description}
-                  </span>
-                </label>
-              )
-            )}
-          </div>
-        </fieldset>
+        <label>
+          Tell us how you plan to use the funds
+          <textarea
+            name="message"
+            value={form.message}
+            onChange={update}
+            required
+            rows={6}
+            placeholder="Describe how the financing will be used."
+          />
+        </label>
       </div>
 
-      {isPropertyFinancing && (
-        <div className="lead-form__group">
-          <p className="eyebrow">
-            PROPERTY INFORMATION
-          </p>
-
-          <fieldset>
-            <legend>
-              Is the property under contract?
-            </legend>
-
-            <div className="radio-grid">
-              {['Yes', 'No'].map(
-                (value) => (
-                  <label
-                    className={`radio-card ${
-                      form.property_under_contract ===
-                      value
-                        ? 'radio-card--selected'
-                        : ''
-                    }`}
-                    key={value}
-                  >
-                    <input
-                      type="radio"
-                      name="property_under_contract"
-                      value={value}
-                      checked={
-                        form.property_under_contract ===
-                        value
-                      }
-                      onChange={update}
-                      required
-                    />
-
-                    <span>
-                      <strong>{value}</strong>
-                    </span>
-                  </label>
-                )
-              )}
-            </div>
-          </fieldset>
-        </div>
-      )}
-
-      {isPayrollFinancing && (
-        <div className="lead-form__group">
-          <p className="eyebrow">
-            PAYROLL INFORMATION
-          </p>
-
-          <div className="field-grid">
-            <label>
-              Next payroll date
-              <input
-                type="date"
-                name="next_payroll_date"
-                value={form.next_payroll_date}
-                onChange={update}
-                required
-              />
-            </label>
-
-            <label>
-              Payroll amount needed
-              <input
-                name="payroll_amount_needed"
-                value={
-                  form.payroll_amount_needed
-                }
-                onChange={update}
-                inputMode="decimal"
-                required
-                placeholder="e.g. $15,000"
-              />
-            </label>
-          </div>
-        </div>
-      )}
-
       {status.type === 'error' && (
-        <div
-          className="form-error"
-          role="alert"
-        >
+        <div className="form-error" role="alert">
           {status.message}
         </div>
       )}
 
       <div className="lead-form__footer">
         <p>
-          Your information is kept confidential by
-          CareBearBooks Accounting and used only to
-          match you with the right financing pathway.
+          Your information is kept confidential by CareBearBooks
+          Accounting and used only to discuss available financing
+          options.
         </p>
 
         <button
@@ -691,10 +412,7 @@ export default function LeadForm({ preset }) {
           ) : (
             <>
               Continue
-              <ArrowRight
-                size={18}
-                aria-hidden="true"
-              />
+              <ArrowRight size={18} aria-hidden="true" />
             </>
           )}
         </button>
