@@ -1,10 +1,12 @@
-import { House } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import logoMark from '../assets/carebearbooks-logo.png'
 
 export default function Logo({ light = false, tagline }) {
   return (
     <Link className={`logo ${light ? 'logo--light' : ''}`} to="/" aria-label="CareBearBooks home">
-      <span className="logo__mark"><House size={21} strokeWidth={1.7} /></span>
+      <span className="logo__mark">
+        <img src={logoMark} alt="" aria-hidden="true" />
+      </span>
       <span>
         <strong>CareBearBooks</strong>
         {tagline && <span className="logo__tagline"> | {tagline}</span>}
