@@ -1,6 +1,7 @@
 import { Building2 } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import LeadForm from '../components/LeadForm'
+import Logo from '../components/Logo'
 
 export default function GetStartedPage() {
   const location = useLocation()
@@ -9,6 +10,7 @@ export default function GetStartedPage() {
   return (
     <section className="form-section section" id="get-started">
       <div className="form-section__intro">
+        <Logo light tagline="Accounting" />
         <p className="eyebrow">GET STARTED</p>
         <h2>Tell us what you’re financing.</h2>
         <p>Provide a few details so we can understand your need and direct you to the relevant financing process or partner.</p>

@@ -34,33 +34,33 @@ const businessStatusOptions = [
 const financingOptions = [
   [
     'purchase',
-    'Purchase or acquisition financing',
-    'I need financing to buy or acquire an AFH property or business.',
+    'Purchase or acquisition',
+    'Buy or acquire an AFH property or business.',
   ],
   [
     'construction_renovation',
-    'Renovation or expansion financing',
-    'I need capital for improvements, renovations, or expansion.',
+    'Renovation or expansion',
+    'Capital for improvements, renovations, or expansion.',
   ],
   [
     'payroll',
     'Payroll funding',
-    'I need help covering a temporary payroll cash-flow gap.',
+    'Cover a temporary payroll cash-flow gap.',
   ],
   [
     'working_capital',
     'Working capital',
-    'I need funds for day-to-day business operations.',
+    'Funds for day-to-day business operations.',
   ],
   [
     'equipment',
     'Equipment financing',
-    'I need financing for business equipment or furnishings.',
+    'Financing for business equipment or furnishings.',
   ],
   [
     'not_sure',
     'Not sure yet',
-    'I would like help identifying the right financing option.',
+    'Help me identify the right financing option.',
   ],
   [
     'other',
@@ -388,6 +388,7 @@ export default function LeadForm({ preset }) {
     >
       <div className="lead-form__group">
         <p className="eyebrow">
+          <span className="lead-form__group-num">1</span>
           CONTACT INFORMATION
         </p>
 
@@ -434,6 +435,7 @@ export default function LeadForm({ preset }) {
 
       <div className="lead-form__group">
         <p className="eyebrow">
+          <span className="lead-form__group-num">2</span>
           BUSINESS INFORMATION
         </p>
 
@@ -511,6 +513,7 @@ export default function LeadForm({ preset }) {
 
       <div className="lead-form__group">
         <p className="eyebrow">
+          <span className="lead-form__group-num">3</span>
           FINANCING REQUEST
         </p>
 
@@ -519,7 +522,7 @@ export default function LeadForm({ preset }) {
             What are you financing?
           </legend>
 
-          <div className="radio-grid">
+          <div className="option-grid">
             {financingOptions.map(
               ([
                 value,
@@ -527,10 +530,10 @@ export default function LeadForm({ preset }) {
                 description,
               ]) => (
                 <label
-                  className={`radio-card ${
+                  className={`option-row ${
                     form.financing_need ===
                     value
-                      ? 'radio-card--selected'
+                      ? 'option-row--selected'
                       : ''
                   }`}
                   key={value}
@@ -551,9 +554,9 @@ export default function LeadForm({ preset }) {
                     }}
                   />
 
-                  <span>
-                    <strong>{title}</strong>
-                    <small>{description}</small>
+                  <span className="option-row__text">
+                    <strong>{title}</strong>{' '}
+                    {description}
                   </span>
                 </label>
               )
@@ -652,36 +655,38 @@ export default function LeadForm({ preset }) {
         </div>
       )}
 
-      <button
-        className="button button--primary button--wide"
-        type="submit"
-        disabled={status.type === 'loading'}
-      >
-        {status.type === 'loading' ? (
-          <>
-            <LoaderCircle
-              className="spin"
-              size={18}
-              aria-hidden="true"
-            />
-            Submitting...
-          </>
-        ) : (
-          <>
-            Check my financing options
-            <ArrowRight
-              size={18}
-              aria-hidden="true"
-            />
-          </>
-        )}
-      </button>
+      <div className="lead-form__footer">
+        <p>
+          Your information is kept confidential by
+          CareBearBooks Accounting and used only to
+          match you with the right financing pathway.
+        </p>
 
-      <p className="form-fineprint">
-        No obligation. We’ll review your
-        information and contact you regarding
-        available financing options.
-      </p>
+        <button
+          className="button button--primary"
+          type="submit"
+          disabled={status.type === 'loading'}
+        >
+          {status.type === 'loading' ? (
+            <>
+              <LoaderCircle
+                className="spin"
+                size={18}
+                aria-hidden="true"
+              />
+              Submitting...
+            </>
+          ) : (
+            <>
+              Continue
+              <ArrowRight
+                size={18}
+                aria-hidden="true"
+              />
+            </>
+          )}
+        </button>
+      </div>
     </form>
   )
 }

@@ -25,7 +25,7 @@ export default function Layout() {
           <Link className="nav-link nav-link--light" to="/how-it-works">How it works</Link>
           <Link className="nav-link nav-link--light" to="/faqs">FAQs</Link>
         </nav>
-        <p>© {new Date().getFullYear()} AFH Financing Partners. Financing is subject to lender review and approval.</p>
+        <p>© {new Date().getFullYear()} CareBearBooks. Financing is subject to lender review and approval.</p>
         <p>CareBearBooks is not a lender. Financing availability is subject to the applicable provider’s application, eligibility requirements, underwriting, approval, credit limits, pricing, and final terms. Payro Finance is a financing product and not an insurance policy.</p>
       </footer>
     </div>
