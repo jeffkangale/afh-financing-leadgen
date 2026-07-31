@@ -58,12 +58,14 @@ footer p:not(:first-of-type) { border-top: none; color: #9db2ac; font-size: 11px
 .path-card__icon { width: 34px; height: 34px; color: var(--forest); }
 .path-card__number { max-width: 72%; text-align: right; line-height: 1.5; }
 
-.lead-form__group { margin-bottom: 34px; }
+.lead-form { padding: 64px; }
+
+.lead-form__group { margin-bottom: 44px; }
 .lead-form__group:last-of-type { margin-bottom: 0; }
-.lead-form__group > .eyebrow { padding-bottom: 14px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+.lead-form__group > .eyebrow { padding-bottom: 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
 .lead-form__group > label,
 .lead-form__group > .field-grid,
-.lead-form__group > fieldset { margin-top: 20px; }
+.lead-form__group > fieldset { margin-top: 24px; }
 .lead-form__group > fieldset:first-child,
 .lead-form__group > label:first-child,
 .lead-form__group > .field-grid:first-child { margin-top: 0; }
@@ -75,28 +77,32 @@ footer p:not(:first-of-type) { border-top: none; color: #9db2ac; font-size: 11px
 /* --- get-started: dark sidebar + form panel --- */
 #get-started { padding: 0; }
 #get-started.form-section { gap: 0; border: 1px solid #cedad4; }
-.form-section__intro { background: var(--forest-dark); color: white; padding: 56px 48px; display: flex; flex-direction: column; }
-.form-section__intro .logo { margin-bottom: 44px; }
-.form-section__intro .eyebrow { color: var(--copper); }
-.form-section__intro h2 { color: white; font-family: 'Libre Caslon Display', serif; font-weight: 400; font-size: clamp(28px, 3vw, 38px); line-height: 1.15; margin: 16px 0 0; }
-.form-section__intro > p { color: #b5c8c1; }
-.form-section__intro .form-note { border-top-color: #3a5c51; color: #c9dad3; }
+.form-section__intro { background: var(--forest-dark); color: white; padding: 72px 56px; display: flex; flex-direction: column; }
+.form-section__intro .logo { margin-bottom: 64px; }
+.form-section__intro .eyebrow { color: var(--copper); margin-bottom: 24px; }
+.form-section__intro h2 { color: white; font-family: 'Libre Caslon Display', serif; font-weight: 400; font-size: clamp(28px, 3vw, 38px); line-height: 1.15; margin: 0 0 20px; }
+.form-section__intro > p { color: #b5c8c1; margin: 0; }
+.form-section__intro .form-note { border-top-color: #3a5c51; color: #c9dad3; margin-top: 40px; padding-top: 24px; }
 
-.option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-.option-row { display: flex; gap: 12px; align-items: flex-start; border: 1px solid #c8d3ce; padding: 15px 17px; cursor: pointer; }
+.field-grid { gap: 20px 24px; }
+
+.option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.option-row { display: flex; gap: 14px; align-items: flex-start; border: 1px solid #c8d3ce; padding: 16px 18px; cursor: pointer; }
 .option-row:hover { border-color: var(--forest); }
 .option-row--selected { border-color: var(--forest); background: #f0f6f3; }
 .option-row input { width: auto; margin: 3px 0 0; flex-shrink: 0; }
 .option-row__text { font-size: 14px; line-height: 1.5; color: #596a63; }
 .option-row__text strong { color: var(--ink); }
 
-.lead-form__footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
+.lead-form__footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 44px; padding-top: 32px; border-top: 1px solid var(--line); }
 .lead-form__footer p { font-size: 12px; color: #77847f; line-height: 1.5; max-width: 380px; margin: 0; }
 
 @media(max-width:950px){
   .checklist{grid-template-columns:1fr} .steps{grid-template-columns:1fr} .path-grid{grid-template-columns:1fr}
   #get-started.form-section{grid-template-columns:1fr}
-  .form-section__intro{padding:40px 28px}
+  .form-section__intro{padding:48px 32px}
+  .lead-form{padding:48px 32px}
   .option-grid{grid-template-columns:1fr}
   .lead-form__footer{flex-direction:column;align-items:stretch;text-align:center}
 }
+@media(max-width:620px){ .lead-form{padding:28px} }
