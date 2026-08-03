@@ -13,7 +13,7 @@ export default function PurchaseFinancingPage() {
   return (
     <section className="financing-detail section" id="purchase-financing">
       <div className="section-heading">
-        <p className="eyebrow">PATH 01 · PURCHASE FINANCING</p>
+        <p className="eyebrow">PURCHASE FINANCING</p>
         <h2>Financing to acquire the right property.</h2>
         <p>This page is for visitors exploring financing related to purchasing or acquiring an Adult Family Home or related property.</p>
       </div>

@@ -18,7 +18,7 @@ export default function PayrollFundingPage() {
   return (
     <section className="financing-detail section" id="payroll-funding">
       <div className="section-heading">
-        <p className="eyebrow">PATH 03 · PAYROLL FUNDING</p>
+        <p className="eyebrow">PAYROLL FUNDING</p>
         <h2>A backup funding option for payroll.</h2>
         <p>Even healthy businesses can experience temporary cash-flow gaps caused by delayed payments, seasonal fluctuations, unexpected expenses, or timing differences between receivables and payroll.</p>
         <p>CareBearBooks has partnered with Payro Finance to give eligible payroll clients access to a payroll-focused financing application. Think of it as a backup plan for payroll—Payro Finance provides a financing product, not an insurance policy.</p>

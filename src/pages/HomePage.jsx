@@ -9,7 +9,6 @@ export default function HomePage() {
   return (
     <>
       <section className="hero">
-        <div className="blueprint blueprint--one" aria-hidden="true"><span>24′–0″</span></div>
         <div className="hero__content">
           <p className="eyebrow">FINANCING BUILT FOR ADULT FAMILY HOMES</p>
           <h1>The right capital for the home—and care business—you’re building.</h1>
@@ -33,7 +32,7 @@ export default function HomePage() {
         </div>
         <div className="path-grid">
           <article className="path-card">
-            <div className="path-card__number">PATH 01 · PURCHASE FINANCING</div>
+            <div className="path-card__number">PURCHASE FINANCING</div>
             <HomeIcon className="path-card__icon" aria-hidden="true" />
             <h3>Purchase financing</h3>
             <p>For buying or acquiring an existing adult family home business or a property intended for AFH operations.</p>
@@ -43,7 +42,7 @@ export default function HomePage() {
             </Link>
           </article>
           <article className="path-card path-card--accent">
-            <div className="path-card__number">PATH 02 · PROJECT FINANCING</div>
+            <div className="path-card__number">PROJECT FINANCING</div>
             <WrenchScrewdriverIcon className="path-card__icon" aria-hidden="true" />
             <h3>Project financing</h3>
             <p>For owners who already control the property and need capital to renovate, expand, modernise, or meet licensing requirements.</p>
@@ -53,7 +52,7 @@ export default function HomePage() {
             </Link>
           </article>
           <article className="path-card">
-            <div className="path-card__number">PATH 03 · PAYROLL FUNDING</div>
+            <div className="path-card__number">PAYROLL FUNDING</div>
             <BanknotesIcon className="path-card__icon" aria-hidden="true" />
             <h3>Payroll funding</h3>
             <p>A backup option for temporary payroll cash-flow gaps, through our partner Payro Finance.</p>
