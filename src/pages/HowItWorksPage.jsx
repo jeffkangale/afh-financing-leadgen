@@ -17,7 +17,7 @@ export default function HowItWorksPage() {
       <ol className="steps">
         {timelineSteps.map(([number, title, text], index) => (
           <li className="step" key={number} style={{ animationDelay: `${index * 0.12}s` }}>
-            <span>{number}</span><h3>{title}.</h3><p>{text}</p>
+            <h3>{title}.</h3><p>{text}</p>
           </li>
         ))}
       </ol>
