@@ -59,7 +59,9 @@ footer p:not(:first-of-type) { border-top: none; color: #9db2ac; font-size: 11px
 .path-card__number { max-width: 72%; text-align: right; line-height: 1.5; }
 
 select { width: 100%; border: 1px solid #c8d3ce; background: #fcfdfc; padding: 14px; margin-top: 8px; outline: none; border-radius: 0; font: inherit; color: var(--ink); }
-select:focus { border-color: var(--forest); box-shadow: 0 0 0 2px rgba(30, 75, 61, .1); }
+select:focus { border-color: var(--forest); box-shadow: none; }
+
+input:focus, textarea:focus, select:focus { border-width: 2px; box-shadow: none; }
 
 .logo__mark { width: 38px; height: 38px; border: 0; border-radius: 50%; overflow: hidden; position: relative; background: var(--forest-dark); }
 .logo__mark img { position: absolute; width: 200%; height: 200%; left: -48%; top: -16%; max-width: none; }
